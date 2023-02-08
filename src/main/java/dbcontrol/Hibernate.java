@@ -196,4 +196,82 @@ public class Hibernate
         session.close();
     }
 
+    public Store addStore(String name, String address, String owner)
+    {
+        return new Store(name,address,owner);
+    }
+
+    public List<Store> searchStore(String name, Integer id)
+    {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        Query<Store> query = null;
+
+        if(name != null)
+        {
+            query = session.createNamedQuery("searchByStoreName", Store.class)
+                    .setParameter("name",name);
+        }
+        else if(id != null)
+        {
+            query = session.createNamedQuery("searchByStoreId",Store.class)
+                    .setParameter("id",id);
+        }
+        if(query != null)
+            return query.getResultList();
+        session.close();
+        return null;
+    }
+
+    public void modifyStore(Store store, List<Book> books, String newName, String newAddress, String newOwner)
+    {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        if(store == null)
+            return;
+
+        if(newName != null)
+        {
+            session.createNamedQuery("updateStoreName", Store.class)
+                    .setParameter("id",store.getId())
+                    .setParameter("name",newName)
+                    .executeUpdate();
+        }
+        else if(books != null)
+        {
+            session.createNamedQuery("updateStoreBookList",Store.class)
+                    .setParameter("id",store.getId())
+                    .setParameter("bookList",books.toString())
+                    .executeUpdate();
+        }
+        else if(newAddress != null)
+        {
+            session.createNamedQuery("updateStoreAddress",Store.class)
+                    .setParameter("id",store.getId())
+                    .setParameter("address",newAddress)
+                    .executeUpdate();
+        }
+        else if(newOwner != null)
+        {
+            session.createNamedQuery("updateStoreOwner",Store.class)
+                    .setParameter("id",store.getId())
+                    .setParameter("owner", newOwner)
+                    .executeUpdate();
+        }
+        session.getTransaction().commit();
+        session.close();
+    }
+
+    public void changeStoreLicense(Store store, boolean isLicensed)
+    {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.createNamedQuery("changeStoreLicense", Store.class)
+                .setParameter("id",store.getId())
+                .setParameter("licensed",isLicensed)
+                .executeUpdate();
+        session.getTransaction().commit();
+        session.close();
+    }
 }

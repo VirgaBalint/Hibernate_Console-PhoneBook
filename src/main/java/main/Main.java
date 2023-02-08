@@ -322,7 +322,6 @@ public class Main
                         //sleep(3);
                     }
                 }
-
                 case "2" ->                 // AUTHORS -- DONE
                 {
                     System.out.println(
@@ -433,9 +432,127 @@ public class Main
                         }
                     }
                 }
-                case "3" ->                 // STORES
+                case "3" ->                 // STORES  -- DONE
                 {
-                    
+                    boolean stores = true;
+                    while(stores)
+                    {
+                        System.out.println(
+                                """
+                                            
+                                             Stores
+                                    =========================
+                                    1 - Könyvesbolt hozzáadás
+                                    2 - Bolt módosítás
+                                    3 - Szerződés modosítás
+                                    
+                                    0 - Vissza
+                                    =========================
+                                    
+                                    """
+                        );
+                        String stor = scn.nextLine();
+                        stor = String.valueOf(stor.charAt(0));
+                        switch(stor)
+                        {
+                            case "1" ->     // Store hozzáadás -- DONE
+                            {
+                                System.out.println("\n> Add meg a bolt nevét (0 = Vissza):");
+                                String name = scn.nextLine();
+                                if("0".equals(name))
+                                    break;
+                                System.out.println("\n> Add meg a bolt címét:");
+                                String address = scn.nextLine();
+
+                                System.out.println("\n> Add meg a bolt tulajdonosának nevét:");
+                                String owner = scn.nextLine();
+
+                                Store store = hibernate.addStore(name,address,owner);
+
+                                System.out.println(store+"\n> Biztosan hozzá akarod adni? (y/n)");
+                                String yesNo = scn.nextLine();
+                                if(yesNo.startsWith("y"))
+                                {
+                                    hibernate.commit(store);
+                                    System.out.println("\n> Új bolt hozzáadva");
+                                }
+                                else
+                                    System.out.println("\n> A bolt nem került hozzáadásra.");
+                            }
+                            case "2" ->     // Store modify -- DONE
+                            {
+                                System.out.println(
+                                        """
+                                                   Modify Store
+                                            =========================
+                                            1 - Név változtatás
+                                            2 - Vezető változtatás
+                                            3 - Könyv hozzáadás
+                                            4 - Cím megváltoztatása
+                                            
+                                            0 - Vissza
+                                            =========================
+                                            """
+                                );
+                                String storeModify = scn.nextLine();
+                                storeModify = String.valueOf(storeModify.charAt(0));
+                                switch(storeModify)
+                                {
+                                    case "1" ->
+                                    {
+                                        Store store = getStoreByName(hibernate,scn);
+                                        System.out.println("\n> Mire szeretnéd változtatni a nevét?:");
+                                        String name = scn.nextLine();
+                                        hibernate.modifyStore(store,null,name,null,null);
+                                    }
+                                    case "2" ->
+                                    {
+                                        Store store = getStoreByName(hibernate,scn);
+                                        System.out.println("\n> Mire szeretnéd változtatni a tulajdonos nevét?:");
+                                        String name = scn.nextLine();
+                                        hibernate.modifyStore(store,null,null,null,name);
+                                    }
+                                    case "3" ->
+                                    {
+                                        Store store = getStoreByName(hibernate,scn);
+                                        List<Book> books = store.getBookList();
+
+                                        Book book = getBookByName(hibernate,scn);
+                                        books.add(book);
+                                        hibernate.modifyStore(store,books,null,null,null);
+                                    }
+                                    case "4" ->
+                                    {
+                                        Store store = getStoreByName(hibernate, scn);
+                                        System.out.println("\n> Mire szeretnéd változtatni a címet?:");
+                                        String newAddress = scn.nextLine();
+                                        hibernate.modifyStore(store,null,null,newAddress,null);
+                                    }
+                                }
+                            }
+                            case "3" ->
+                            {
+                                Store store = getStoreByName(hibernate, scn);
+                                if(store.isLicensed())
+                                {
+                                    System.out.println("\n> El akarod venne ennek a boltnak a licenszét? (y/n)");
+                                    String yesNo = scn.nextLine();
+
+                                    if(yesNo.startsWith("y"))
+                                        hibernate.changeStoreLicense(store, false);
+                                }
+                                else
+                                {
+                                    System.out.println("\n> Akarsz adni liszenszt ennek a boltnak? (y/n)");
+                                    String yesNo = scn.nextLine();
+
+                                    if(yesNo.startsWith("y"))
+                                        hibernate.changeStoreLicense(store,true);
+                                }
+                            }
+                            default -> stores = false;
+                        }
+                    }
 
                 }
                 default -> {return;}
@@ -443,6 +560,25 @@ public class Main
         }
     }
 
+    static Store getStoreByName(Hibernate hibernate, Scanner scn)
+    {
+        System.out.println("\n> Add meg a könyvesbolt nevét:");
+        String name = scn.nextLine();
+        List<Store> stores = hibernate.searchStore(name,null);
+
+        if(stores.size() == 0)
+        {
+            System.out.printf("\nNincsen bolt ezzel a névvel! (%s)\n",name);
+            sleep(5);
+            return null;
+        }
+        else
+            stores.forEach(System.out::println);
+        Integer id = idBekero(scn);
+        if(id == null)
+            return null;
+        return hibernate.searchStore(null,id).get(0);
+    }
     private static Author getAuthorByName(Hibernate hibernate, Scanner scn)
     {
         System.out.println("\n> Add meg a szerző nevét:");
