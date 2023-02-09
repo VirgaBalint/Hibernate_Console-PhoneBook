@@ -60,25 +60,28 @@ public class Hibernate
 
         if (author != null && books != null)             // Add book
         {
-            session.createNamedQuery("updateBooks", Author.class)
+            session.createNamedQuery("updateBooks")
                     .setParameter("id", author.getId())
                     .setParameter("books", books.toString())
                     .executeUpdate();
-        } else if (author != null && newName != null)       // Change name
+        }
+        else if (author != null && newName != null)       // Change name
         {
-            session.createNamedQuery("updateAuthorName", Author.class)
+            session.createNamedQuery("updateAuthorName")
                     .setParameter("id", author.getId())
                     .setParameter("name", newName)
                     .executeUpdate();
-        } else if (author != null && newDob != null)
+        }
+        else if (author != null && newDob != null)
         {
-            session.createNamedQuery("updateDob", Author.class)
+            session.createNamedQuery("updateDob")
                     .setParameter("id", author.getId())
                     .setParameter("dob", newDob)
                     .executeUpdate();
-        } else if (author != null && delete)
+        }
+        else if (author != null && delete)
         {
-            session.createNamedQuery("deleteAuthor", Author.class)
+            session.createNamedQuery("deleteAuthor")
                     .setParameter("id", author.getId())
                     .executeUpdate();
 
@@ -148,25 +151,28 @@ public class Hibernate
 
         if (author != null)
         {
-            session.createNamedQuery("updateAuthor", Book.class)
+            session.createNamedQuery("updateAuthor")
                     .setParameter("newAuthor", author)
                     .setParameter("id", id)
                     .executeUpdate();
-        } else if (isbn != null)
+        }
+        else if (isbn != null)
         {
-            session.createNamedQuery("updateISBN", Book.class)
+            session.createNamedQuery("updateISBN")
                     .setParameter("newIsbn", isbn)
                     .setParameter("id", id)
                     .executeUpdate();
-        } else if (title != null)
+        }
+        else if (title != null)
         {
-            session.createNamedQuery("updateTitle", Book.class)
+            session.createNamedQuery("updateTitle")
                     .setParameter("newTitle", title)
                     .setParameter("id", id)
                     .executeUpdate();
-        } else if (publishDate != null)
+        }
+        else if (publishDate != null)
         {
-            session.createNamedQuery("updateDOP", Book.class)
+            session.createNamedQuery("updateDOP")
                     .setParameter("newDOP", publishDate)
                     .setParameter("id", id)
                     .executeUpdate();
@@ -179,7 +185,7 @@ public class Hibernate
     {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        session.createNamedQuery("updateMarket", Book.class)
+        session.createNamedQuery("updateMarket")
                 .setParameter("id", book.getId())
                 .setParameter("inMarket", inMarket)
                 .executeUpdate();
@@ -233,28 +239,28 @@ public class Hibernate
 
         if(newName != null)
         {
-            session.createNamedQuery("updateStoreName", Store.class)
+            session.createNamedQuery("updateStoreName")
                     .setParameter("id",store.getId())
                     .setParameter("name",newName)
                     .executeUpdate();
         }
         else if(books != null)
         {
-            session.createNamedQuery("updateStoreBookList",Store.class)
+            session.createNamedQuery("updateStoreBookList")
                     .setParameter("id",store.getId())
                     .setParameter("bookList",books.toString())
                     .executeUpdate();
         }
         else if(newAddress != null)
         {
-            session.createNamedQuery("updateStoreAddress",Store.class)
+            session.createNamedQuery("updateStoreAddress")
                     .setParameter("id",store.getId())
                     .setParameter("address",newAddress)
                     .executeUpdate();
         }
         else if(newOwner != null)
         {
-            session.createNamedQuery("updateStoreOwner",Store.class)
+            session.createNamedQuery("updateStoreOwner")
                     .setParameter("id",store.getId())
                     .setParameter("owner", newOwner)
                     .executeUpdate();
